@@ -1,0 +1,48 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Large media not referenced anywhere in src/ — kept on disk, out of history.
+# solar-loop.mp4 is the 80 MB original that solar-loop-1080.mp4 was cut from.
+/public/videos/solar-loop.mp4
+/public/videos/panel-anatomy.mp4
+# stray backup copy; the served one is public/videos/hero-solar.mp4
+/hero-solar.mp4
