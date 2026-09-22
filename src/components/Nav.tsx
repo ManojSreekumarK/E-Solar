@@ -8,7 +8,6 @@ const LINKS = [
   { id: "features", label: "Features" },
   { id: "calculator", label: "Calculator" },
   { id: "process", label: "Process" },
-  { id: "testimonials", label: "Testimonials" },
 ];
 
 export default function Nav() {

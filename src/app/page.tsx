@@ -5,7 +5,6 @@ import ReductionStat from "@/components/ReductionStat";
 import PanelAnatomy from "@/components/PanelAnatomy";
 import Calculator from "@/components/Calculator";
 import Process from "@/components/Process";
-import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -31,7 +30,6 @@ export default function Home() {
         </div>
         <Calculator />
         <Process />
-        <Testimonials />
       </main>
       <Footer />
     </>

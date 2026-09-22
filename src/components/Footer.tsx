@@ -7,7 +7,6 @@ const DISCOVER = [
   { href: "#features", label: "Features" },
   { href: "#calculator", label: "Calculator" },
   { href: "#process", label: "Process" },
-  { href: "#testimonials", label: "Testimonials" },
 ];
 
 // TODO: swap the "#" entries for real profile URLs once they are confirmed.
