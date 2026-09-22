@@ -24,7 +24,7 @@ export default function Home() {
             {/* Dwell space: ReductionStat is `sticky h-screen`, so its own
                 flow height gives it no time on screen before the next section
                 arrives. This scrolls past while it stays pinned. */}
-            <div aria-hidden className="h-screen" />
+            <div aria-hidden className="h-[40vh]" />
             <PanelAnatomy />
           </div>
         </div>

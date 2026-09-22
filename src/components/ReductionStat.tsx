@@ -169,7 +169,7 @@ export default function ReductionStat() {
           up to
         </h2>
 
-        <div className="mx-auto mt-14 flex max-w-4xl items-center justify-center sm:mt-4">
+        <div className="mx-auto mt-8 flex max-w-4xl items-center justify-center sm:mt-16">
           <span
             ref={numeralRef}
             // tabular-nums keeps every digit the same width, so the number
