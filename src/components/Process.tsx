@@ -75,7 +75,7 @@ export default function Process() {
   }
 
   return (
-    <section id="process" ref={ref} className="relative h-[170vh] scroll-mt-24 bg-white">
+    <section id="process" ref={ref} className="relative h-[130vh] scroll-mt-24 bg-white">
       <div className="sticky top-0 h-screen w-full overflow-hidden px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <h2 className="font-heading text-3xl font-bold sm:text-4xl">The Process.</h2>

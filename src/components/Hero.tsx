@@ -115,7 +115,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="home" ref={sectionRef} className="relative h-[200vh] bg-white">
+    <section id="home" ref={sectionRef} className="relative h-[150vh] bg-white">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <div
           ref={videoWrapperRef}

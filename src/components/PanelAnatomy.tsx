@@ -176,7 +176,7 @@ export default function PanelAnatomy() {
       // z-20 puts this above the pinned Service Rating panel (z-10) so it
       // slides over the top rather than appearing from underneath.
       className="relative z-20 bg-black"
-      style={{ height: `${BEATS.length * 70}vh` }}
+      style={{ height: `${BEATS.length * 55}vh` }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* ---- artwork stage. Previously bled 6% past the right edge, which
