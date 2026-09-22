@@ -99,7 +99,11 @@ export default function PanelAnatomy() {
           trigger: rootRef.current,
           start: "top top",
           end: "bottom bottom",
-          scrub: true,
+          // A numeric scrub adds a short catch-up ease instead of snapping
+          // the timeline to the scroll position on every tick, which is what
+          // made discrete wheel/trackpad steps read as a hard jump-cut
+          // between beats once the pinned height was shortened.
+          scrub: 0.6,
           // recompute fromTo values on refresh so a resize or late-loading
           // asset cannot leave the beats measured against a stale layout
           invalidateOnRefresh: true,
@@ -176,7 +180,7 @@ export default function PanelAnatomy() {
       // z-20 puts this above the pinned Service Rating panel (z-10) so it
       // slides over the top rather than appearing from underneath.
       className="relative z-20 bg-black"
-      style={{ height: `${BEATS.length * 55}vh` }}
+      style={{ height: `${BEATS.length * 75}vh` }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* ---- artwork stage. Previously bled 6% past the right edge, which
