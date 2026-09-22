@@ -22,7 +22,7 @@ const SOLUTIONS = [
   {
     title: "On-Grid Solar",
     blurb: "Grid-tied rooftop systems that cut your monthly bill from day one.",
-    tile: "Lower every bill.",
+    tile: "Lower electricity bill.",
   },
   {
     title: "Hybrid Systems",
