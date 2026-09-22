@@ -13,6 +13,29 @@ export default function ReductionStat() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const numeralRef = useRef<HTMLSpanElement>(null);
   const captionRef = useRef<HTMLParagraphElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // `autoPlay` overrides preload="metadata": the browser pulled all 3.4 MB at
+  // page load, competing with the hero video for bandwidth. Over a tunnel on a
+  // phone that delays the thing the user actually sees first. Load it only
+  // once this section is roughly a screen away.
+  useEffect(() => {
+    const video = videoRef.current;
+    const section = sectionRef.current;
+    if (!video || !section) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        video.src = VIDEO_SRC;
+        video.play().catch(() => {});
+      },
+      { rootMargin: "150% 0px" }
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -126,18 +149,18 @@ export default function ReductionStat() {
         className="absolute -top-[15%] left-0 h-[130%] w-full"
       >
         <video
-          src={VIDEO_SRC}
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           className="h-full w-full object-cover"
         />
       </div>
       <div className="absolute inset-0 bg-black/60" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 -translate-y-[7vh]">
         <h2
           ref={headingRef}
           className="font-heading text-3xl font-semibold text-white sm:text-4xl"
@@ -146,12 +169,12 @@ export default function ReductionStat() {
           up to
         </h2>
 
-        <div className="mx-auto mt-4 flex max-w-4xl items-center justify-center">
+        <div className="mx-auto mt-14 flex max-w-4xl items-center justify-center sm:mt-4">
           <span
             ref={numeralRef}
             // tabular-nums keeps every digit the same width, so the number
             // doesn't jitter sideways as it counts up.
-            className="font-heading block tabular-nums select-none text-[26vw] leading-none font-extrabold text-transparent sm:text-[15rem]"
+            className="font-heading block tabular-nums select-none text-[20vw] leading-none font-extrabold text-transparent sm:text-[15rem]"
             style={{ WebkitTextStroke: "2px rgba(255,255,255,0.55)" }}
           >
             0%

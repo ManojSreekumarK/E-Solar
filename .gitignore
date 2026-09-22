@@ -42,7 +42,7 @@ next-env.d.ts
 
 # Large media not referenced anywhere in src/ — kept on disk, out of history.
 # solar-loop.mp4 is the 80 MB original that solar-loop-1080.mp4 was cut from.
-/public/videos/solar-loop.mp4
-/public/videos/panel-anatomy.mp4
+/assets/originals/videos/solar-loop.mp4
+/assets/originals/videos/panel-anatomy.mp4
 # stray backup copy; the served one is public/videos/hero-solar.mp4
 /hero-solar.mp4

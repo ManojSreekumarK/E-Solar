@@ -38,14 +38,16 @@ export default function Nav() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }
 
+  // The pill is ~470px of labels, wider than any phone, so it was being
+  // clipped at both ends. Cap it to the viewport and let it scroll.
   return (
-    <nav className="fixed top-5 left-1/2 z-50 -translate-x-1/2">
-      <ul className="flex items-center gap-1 rounded-full bg-black/95 p-1.5 text-[13px] font-medium shadow-lg shadow-black/20 backdrop-blur">
+    <nav className="fixed top-5 left-1/2 z-50 max-w-[calc(100vw-1rem)] -translate-x-1/2 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="flex w-max items-center gap-0.5 rounded-full bg-black/95 p-1.5 text-[11px] font-medium shadow-lg shadow-black/20 backdrop-blur sm:gap-1 sm:text-[13px]">
         {LINKS.map((link) => (
           <li key={link.id} className="relative">
             <button
               onClick={() => handleClick(link.id)}
-              className={`relative z-10 block rounded-full px-4 py-2 whitespace-nowrap transition-colors ${
+              className={`relative z-10 block rounded-full px-2 py-2 whitespace-nowrap transition-colors sm:px-4 ${
                 active === link.id
                   ? "text-black"
                   : "text-white/70 hover:text-white"

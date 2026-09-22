@@ -65,12 +65,12 @@ export default function Footer() {
       <div className="grid grid-cols-2 border-b border-white/10 lg:grid-cols-[0.9fr_0.9fr_2.2fr_1.1fr]">
         <div className="border-b border-white/10 px-6 py-10 lg:border-b-0 lg:px-10 lg:py-14">
           <p className="text-sm text-lime-300">Discover E Solar</p>
-          <ul className="mt-6 space-y-2">
+          <ul className="mt-4 space-y-0.5">
             {DISCOVER.map((l) => (
               <li key={l.label}>
                 <a
                   href={l.href}
-                  className="text-lg text-white/70 transition-colors hover:text-white"
+                  className="block py-1.5 text-lg text-white/70 transition-colors hover:text-white"
                 >
                   {l.label}
                 </a>
@@ -81,14 +81,14 @@ export default function Footer() {
 
         <div className="border-b border-l border-white/10 px-6 py-10 lg:border-b-0 lg:px-10 lg:py-14">
           <p className="text-sm text-lime-300">Social</p>
-          <ul className="mt-6 space-y-2">
+          <ul className="mt-4 space-y-0.5">
             {SOCIAL.map((l) => (
               <li key={l.label}>
                 <a
                   href={l.href}
                   target={l.external ? "_blank" : undefined}
                   rel={l.external ? "noopener noreferrer" : undefined}
-                  className="text-lg text-white/70 transition-colors hover:text-white"
+                  className="block py-1.5 text-lg text-white/70 transition-colors hover:text-white"
                 >
                   {l.label}
                 </a>

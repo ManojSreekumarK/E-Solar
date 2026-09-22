@@ -101,7 +101,7 @@ export default function About() {
       <div className="mx-auto w-full max-w-6xl xl:max-w-none">
         <div
           ref={overlineRef}
-          className="mx-auto max-w-3xl font-mono text-base leading-snug tracking-wide text-black/45 uppercase xl:absolute xl:top-[10%] xl:left-[2%] xl:mx-0 xl:max-w-none"
+          className="mx-auto max-w-3xl font-mono text-sm leading-snug tracking-wide text-black/45 uppercase sm:text-base xl:absolute xl:top-[10%] xl:left-[2%] xl:mx-0 xl:max-w-none"
         >
           <div>Satellite-verified, data-driven</div>
           <div>solar intelligence</div>
@@ -115,11 +115,11 @@ export default function About() {
             text={HEADING}
             delay={0.1}
             stagger={0.022}
-            className="font-heading mx-auto max-w-3xl text-2xl leading-relaxed font-medium text-neutral-900 sm:text-4xl sm:leading-[1.4] xl:mx-0 xl:max-w-none xl:text-[clamp(2rem,2.6vw,3.5rem)]"
+            className="font-heading mx-auto max-w-3xl text-xl leading-snug font-medium text-neutral-900 sm:text-4xl sm:leading-[1.4] xl:mx-0 xl:max-w-none xl:text-[clamp(2rem,2.6vw,3.5rem)]"
           />
         </div>
 
-        <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 xl:mt-0 xl:block">
+        <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-6 sm:mt-16 sm:grid-cols-2 sm:gap-y-8 xl:mt-0 xl:block">
           {CHIPS.map((chip, i) => (
             <div
               key={chip.lines.join()}

@@ -182,7 +182,7 @@ export default function PanelAnatomy() {
         {/* ---- artwork stage. Previously bled 6% past the right edge, which
                 clipped wider renders like the solar-cell callout; now sized to
                 sit fully inside the viewport. ---- */}
-        <div className="absolute top-1/2 right-[2%] hidden h-[80vh] w-[50%] -translate-y-1/2 lg:block">
+        <div className="pointer-events-none absolute top-[13%] left-1/2 aspect-square h-[21vh] w-auto -translate-x-1/2 [@media(min-height:700px)_and_(max-width:1023px)]:top-[12%] [@media(min-height:700px)_and_(max-width:1023px)]:h-[30vh] lg:top-1/2 lg:right-[2%] lg:left-auto lg:aspect-auto lg:h-[80vh] lg:w-[50%] lg:translate-x-0 lg:-translate-y-1/2">
           {BEATS.map((beat, i) => (
             <div key={beat.label} className="absolute inset-0">
               <div data-beat-media className="absolute inset-0">
@@ -193,7 +193,7 @@ export default function PanelAnatomy() {
                   className="h-full w-full object-contain"
                 />
               </div>
-              <div data-chip-group={i} className="absolute inset-0">
+              <div data-chip-group={i} className="absolute inset-0 hidden lg:block">
                 {beat.chips.map((chip) => (
                   <span
                     key={chip.text}
@@ -211,7 +211,7 @@ export default function PanelAnatomy() {
 
         {/* ---- persistent section heading, top-left ---- */}
         <div className="absolute top-[9%] left-[3%] z-10 lg:left-[3%]">
-          <h2 className="font-heading text-2xl font-bold text-white sm:text-3xl">
+          <h2 className="font-heading text-xl font-bold text-white sm:text-3xl">
             Panel Anatomy.
           </h2>
           <p className="mt-1 font-mono text-[11px] tracking-[0.16em] text-white/40 uppercase">
@@ -220,20 +220,20 @@ export default function PanelAnatomy() {
         </div>
 
         {/* ---- text beats: flush-left column, one visible at a time ---- */}
-        <div className="absolute top-[32%] left-[3%] z-10 h-[420px] w-[92%] lg:w-[42%]">
+        <div className="absolute top-[30%] left-[3%] z-10 h-[420px] w-[92%] [@media(min-height:700px)_and_(max-width:1023px)]:top-[43%] lg:top-[32%] lg:w-[42%]">
           {BEATS.map((beat) => (
             <div key={beat.title} data-beat-text className="absolute inset-0">
               <span className="inline-block bg-lime-300 px-3 py-1 font-mono text-[11px] tracking-[0.18em] text-black uppercase">
                 {beat.label}
               </span>
-              <h3 className="font-heading mt-5 text-3xl font-bold text-white sm:text-4xl xl:text-[2.5rem] xl:leading-[1.06]">
+              <h3 className="font-heading mt-4 text-2xl font-bold text-white sm:mt-5 sm:text-4xl xl:text-[2.5rem] xl:leading-[1.06]">
                 {beat.title}
               </h3>
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/55 sm:text-base">
+              <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/55 sm:mt-4 sm:text-base">
                 {beat.body}
               </p>
 
-              <dl className="mt-7 flex flex-wrap gap-x-12 gap-y-5">
+              <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-4 sm:mt-7 sm:gap-x-12 sm:gap-y-5">
                 {beat.stats.map((stat) => (
                   <div key={stat.caption}>
                     <dt className="font-heading text-2xl font-bold text-white sm:text-3xl">
@@ -246,7 +246,7 @@ export default function PanelAnatomy() {
                 ))}
               </dl>
 
-              <button className="mt-8 inline-flex items-center gap-3 rounded-lg border border-white/25 py-2.5 pr-2.5 pl-5 font-mono text-[11px] tracking-[0.16em] text-white uppercase transition-colors hover:border-white/50">
+              <button className="mt-5 inline-flex items-center gap-3 rounded-lg border border-white/25 py-2.5 pr-2.5 pl-5 font-mono text-[11px] tracking-[0.16em] text-white uppercase transition-colors hover:border-white/50 sm:mt-8">
                 {beat.label} spec
                 <span className="flex h-7 w-7 items-center justify-center rounded bg-lime-300 text-black">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">

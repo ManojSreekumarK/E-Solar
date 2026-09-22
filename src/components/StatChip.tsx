@@ -60,7 +60,7 @@ export default function StatChip({
   return (
     <div
       ref={ref}
-      className={`flex items-center gap-4 transition-all duration-500 ease-out ${className}`}
+      className={`flex items-center gap-3 transition-all duration-500 ease-out sm:gap-4 ${className}`}
       style={{
         opacity: inView ? 1 : 0,
         transform: inView
@@ -69,7 +69,7 @@ export default function StatChip({
         transitionDelay: `${delay}s`,
       }}
     >
-      <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-lime-300">
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-lime-300 sm:h-14 sm:w-14">
         <DotCluster />
       </span>
       <div

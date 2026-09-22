@@ -4,7 +4,19 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
-const VIDEO_SRC = "/videos/hero-solar.mp4";
+// Scrubbing needs every frame to be a keyframe, so file size scales hard with
+// resolution: the 1080p cut is 19.5 MB for ten seconds. Fine on a fast desktop
+// connection, hopeless on a phone. Three tiers, picked from viewport width.
+const VIDEO_TIERS = [
+  { maxWidth: 640, src: "/videos/hero-solar-mobile.mp4" }, // 960x540, 2.7 MB
+  { maxWidth: 1440, src: "/videos/hero-solar-720.mp4" }, //   1280x720, 5.9 MB
+  { maxWidth: Infinity, src: "/videos/hero-solar.mp4" }, //   1920x1080, 19.5 MB
+];
+const POSTER_SRC = "/videos/hero-poster.jpg";
+
+function pickVideoSrc(width: number) {
+  return (VIDEO_TIERS.find((t) => width <= t.maxWidth) ?? VIDEO_TIERS[2]).src;
+}
 
 /** Attach a listener that removes itself after firing once. */
 function once(
@@ -34,6 +46,11 @@ export default function Hero() {
     if (!video) return;
 
     gsap.registerPlugin(ScrollTrigger);
+
+    // Chosen here rather than with <source media>, which Chrome no longer
+    // matches, and rather than a src in the JSX, which would start the
+    // largest download before we could switch away from it.
+    video.src = pickVideoSrc(window.innerWidth);
 
     let ctx: gsap.Context | null = null;
 
@@ -107,7 +124,7 @@ export default function Hero() {
         >
           <video
             ref={videoRef}
-            src={VIDEO_SRC}
+            poster={POSTER_SRC}
             muted
             playsInline
             preload="auto"
@@ -130,7 +147,7 @@ export default function Hero() {
           width={310}
           height={307}
           draggable={false}
-          className="pointer-events-none absolute top-24 left-4 h-auto w-28 select-none drop-shadow-[0_2px_20px_rgba(0,0,0,0.7)] sm:top-6 sm:left-8 sm:w-40"
+          className="pointer-events-none absolute top-24 left-1/2 h-auto w-28 -translate-x-1/2 select-none drop-shadow-[0_2px_20px_rgba(0,0,0,0.7)] sm:top-6 sm:left-8 sm:w-40 sm:translate-x-0"
         />
 
         <div
