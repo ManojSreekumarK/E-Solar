@@ -6,16 +6,21 @@ import { useEffect, useRef } from "react";
 
 // Scrubbing needs every frame to be a keyframe, so file size scales hard with
 // resolution: the 1080p cut is 19.5 MB for ten seconds. Fine on a fast desktop
-// connection, hopeless on a phone. Three tiers, picked from viewport width.
+// connection, hopeless on a phone. Two tiers, picked from viewport width.
+//
+// There used to be a dedicated sub-640px tier at 960x540, but `object-cover`
+// on a portrait phone screen scales to fill viewport *height*, not width —
+// so a landscape clip gets blown up ~4-5x past its native resolution there
+// regardless of viewport width. The 720p tier upscales less (~3.5x) and reads
+// noticeably sharper, so phones now get it too.
 const VIDEO_TIERS = [
-  { maxWidth: 640, src: "/videos/hero-solar-mobile.mp4" }, // 960x540, 2.7 MB
-  { maxWidth: 1440, src: "/videos/hero-solar-720.mp4" }, //   1280x720, 5.9 MB
-  { maxWidth: Infinity, src: "/videos/hero-solar.mp4" }, //   1920x1080, 19.5 MB
+  { maxWidth: 1440, src: "/videos/hero-solar-720.mp4" }, // 1280x720, 5.9 MB
+  { maxWidth: Infinity, src: "/videos/hero-solar.mp4" }, //  1920x1080, 19.5 MB
 ];
 const POSTER_SRC = "/videos/hero-poster.jpg";
 
 function pickVideoSrc(width: number) {
-  return (VIDEO_TIERS.find((t) => width <= t.maxWidth) ?? VIDEO_TIERS[2]).src;
+  return (VIDEO_TIERS.find((t) => width <= t.maxWidth) ?? VIDEO_TIERS[1]).src;
 }
 
 /** Attach a listener that removes itself after firing once. */
@@ -73,16 +78,36 @@ export default function Hero() {
             trigger: sectionRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: true,
+            // A little lag (vs. `true`, which ties 1:1 to raw scroll) smooths
+            // out the fast, jittery deltas a touch flick produces — mobile
+            // video decoders can't keep up with a seek on every raw scroll
+            // event, and without this the backlog shows as stutter.
+            scrub: 0.4,
           },
         });
 
-        // Let GSAP interpolate currentTime itself — much smoother than
-        // firing discrete seeks from a scroll handler.
+        // Tween a plain number instead of `video.currentTime` directly, and
+        // snap it to the video's own frame boundaries before seeking. Every
+        // seek is a real decode on mobile, so asking for sub-frame precision
+        // the video can't display anyway just burns decoder time that would
+        // otherwise go toward keeping up with scroll.
+        const frameTime = 1 / 30;
+        let lastSeek = -1;
+        const seek = { t: 0 };
         tl.fromTo(
-          video,
-          { currentTime: 0 },
-          { currentTime: video.duration || 1, duration: 6 },
+          seek,
+          { t: 0 },
+          {
+            t: video.duration || 1,
+            duration: 6,
+            onUpdate: () => {
+              const snapped = Math.round(seek.t / frameTime) * frameTime;
+              if (snapped !== lastSeek) {
+                video.currentTime = snapped;
+                lastSeek = snapped;
+              }
+            },
+          },
           0
         );
 
