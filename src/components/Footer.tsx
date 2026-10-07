@@ -9,12 +9,12 @@ const DISCOVER = [
   { href: "#process", label: "Process" },
 ];
 
-// TODO: swap the "#" entries for real profile URLs once they are confirmed.
+// TODO: swap the remaining "#" entries for real profile URLs once they are confirmed.
 // WhatsApp is built from the phone number already shown in the footer bar.
 const SOCIAL = [
   { href: "https://wa.me/918921259870", label: "WhatsApp", external: true },
-  { href: "#", label: "LinkedIn" },
-  { href: "#", label: "Instagram" },
+  { href: "https://www.facebook.com/profile.php?id=61591416965008", label: "Facebook", external: true },
+  { href: "https://www.instagram.com/esolar.in/", label: "Instagram", external: true },
   { href: "#", label: "YouTube" },
 ];
 
@@ -232,12 +232,18 @@ export default function Footer() {
           <a href="#" className="transition-colors hover:text-white/80">
             Privacy Policy
           </a>
-          <span>Kozhikode &amp; Thiruvananthapuram, Kerala</span>
+          <span>S N Buildings, 30/258, LMS Junction, Attingal, Thiruvananthapuram - 695101</span>
           <a
             href="tel:+918921259870"
             className="transition-colors hover:text-white/80"
           >
             +91 89212 59870
+          </a>
+          <a
+            href="tel:+919496307656"
+            className="transition-colors hover:text-white/80"
+          >
+            +91 94963 07656
           </a>
         </div>
         <div className="flex items-center gap-3">

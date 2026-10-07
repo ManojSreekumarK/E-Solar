@@ -63,6 +63,15 @@ export default function Calculator() {
     };
   }, [bill]);
 
+  function handleQuoteClick() {
+    const message = "Hi E Solar, I'd like a custom quote.";
+    window.open(
+      `https://wa.me/918921259870?text=${encodeURIComponent(message)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
   return (
     <section id="calculator" className="scroll-mt-24 bg-white px-6 py-28 sm:py-36">
       {/* DOM order is heading -> artwork -> card, which is also the mobile
@@ -166,7 +175,10 @@ export default function Calculator() {
             </div>
           </div>
 
-          <button className="mt-8 w-full rounded-full bg-black py-4 text-sm font-semibold text-white transition-colors hover:bg-black/85">
+          <button
+            onClick={handleQuoteClick}
+            className="mt-8 w-full rounded-full bg-black py-4 text-sm font-semibold text-white transition-colors hover:bg-black/85"
+          >
             Get a Custom Quote
           </button>
         </motion.div>
