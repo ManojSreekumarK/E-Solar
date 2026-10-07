@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     "**.ngrok.app",
     "**.ngrok-free.dev",
     "**.ngrok.io",
+    // LAN IP, for testing on a phone over Wi-Fi via `next dev -H 0.0.0.0`.
+    "192.168.29.9",
   ],
 
   async headers() {

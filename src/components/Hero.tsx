@@ -4,23 +4,24 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
-// Scrubbing needs every frame to be a keyframe, so file size scales hard with
-// resolution: the 1080p cut is 19.5 MB for ten seconds. Fine on a fast desktop
-// connection, hopeless on a phone. Two tiers, picked from viewport width.
-//
-// There used to be a dedicated sub-640px tier at 960x540, but `object-cover`
-// on a portrait phone screen scales to fill viewport *height*, not width —
-// so a landscape clip gets blown up ~4-5x past its native resolution there
-// regardless of viewport width. The 720p tier upscales less (~3.5x) and reads
-// noticeably sharper, so phones now get it too.
-const VIDEO_TIERS = [
-  { maxWidth: 1440, src: "/videos/hero-solar-720.mp4" }, // 1280x720, 5.9 MB
-  { maxWidth: Infinity, src: "/videos/hero-solar.mp4" }, //  1920x1080, 19.5 MB
+// Scroll-scrubbing needs every frame to be an independent keyframe (no
+// inter-frame compression), so file size scales hard with resolution: the
+// 1080p cut is 19.5 MB for ten seconds. Two tiers, picked from viewport width.
+const SCRUB_TIERS = [
+  { maxWidth: 1440, src: "/videos/hero-solar-720.mp4" }, // 1280x720, all-keyframe, 5.9 MB
+  { maxWidth: Infinity, src: "/videos/hero-solar.mp4" }, //  1920x1080, all-keyframe, 19.5 MB
 ];
+// Touch devices autoplay once instead of scroll-scrubbing (see isTouch
+// below), so this can use normal inter-frame compression — full 1080p at a
+// smaller file size than even the 720p all-keyframe tier, and no upscale
+// softness from `object-cover` stretching a sub-1080p source to fill a tall
+// screen.
+const AUTOPLAY_SRC = "/videos/hero-solar-mobile.mp4"; // 1920x1080, standard compression, 5.2 MB
 const POSTER_SRC = "/videos/hero-poster.jpg";
 
-function pickVideoSrc(width: number) {
-  return (VIDEO_TIERS.find((t) => width <= t.maxWidth) ?? VIDEO_TIERS[1]).src;
+function pickVideoSrc(isTouch: boolean, width: number) {
+  if (isTouch) return AUTOPLAY_SRC;
+  return (SCRUB_TIERS.find((t) => width <= t.maxWidth) ?? SCRUB_TIERS[1]).src;
 }
 
 /** Attach a listener that removes itself after firing once. */
@@ -52,21 +53,34 @@ export default function Hero() {
 
     gsap.registerPlugin(ScrollTrigger);
 
+    // Touch devices drive scroll via native OS fling, which never delivers
+    // the steady stream of scroll events a smooth video-seek needs — tying
+    // currentTime to scroll looks chunky there no matter how the tween is
+    // tuned, since it's the browser's scroll delivery that's coarse, not our
+    // code. Autoplay/loop sidesteps the problem entirely instead of chasing
+    // it, and as a bonus no longer needs an all-keyframe encode (see
+    // LOOP_SRC above).
+    const isTouch = matchMedia("(hover: none) and (pointer: coarse)").matches;
+
     // Chosen here rather than with <source media>, which Chrome no longer
     // matches, and rather than a src in the JSX, which would start the
     // largest download before we could switch away from it.
-    video.src = pickVideoSrc(window.innerWidth);
+    video.src = pickVideoSrc(isTouch, window.innerWidth);
 
     let ctx: gsap.Context | null = null;
 
     // iOS refuses to render any frame until the video has been "activated"
-    // by a user gesture — play/pause on first touch does that.
-    const touchActivate = once(document.documentElement, "touchstart", () => {
-      video.play().then(
-        () => video.pause(),
-        () => {}
-      );
-    });
+    // by a user gesture — play/pause on first touch does that. Only matters
+    // for the scrub path below, which seeks before ever calling play(); the
+    // loop path calls play() directly so it doesn't need this.
+    const touchActivate = isTouch
+      ? null
+      : once(document.documentElement, "touchstart", () => {
+          video.play().then(
+            () => video.pause(),
+            () => {}
+          );
+        });
 
     const buildTimeline = () => {
       ctx = gsap.context(() => {
@@ -79,37 +93,40 @@ export default function Hero() {
             start: "top top",
             end: "bottom top",
             // A little lag (vs. `true`, which ties 1:1 to raw scroll) smooths
-            // out the fast, jittery deltas a touch flick produces — mobile
-            // video decoders can't keep up with a seek on every raw scroll
-            // event, and without this the backlog shows as stutter.
+            // out the fast, jittery deltas a touch flick produces.
             scrub: 0.4,
           },
         });
 
-        // Tween a plain number instead of `video.currentTime` directly, and
-        // snap it to the video's own frame boundaries before seeking. Every
-        // seek is a real decode on mobile, so asking for sub-frame precision
-        // the video can't display anyway just burns decoder time that would
-        // otherwise go toward keeping up with scroll.
-        const frameTime = 1 / 30;
-        let lastSeek = -1;
-        const seek = { t: 0 };
-        tl.fromTo(
-          seek,
-          { t: 0 },
-          {
-            t: video.duration || 1,
-            duration: 6,
-            onUpdate: () => {
-              const snapped = Math.round(seek.t / frameTime) * frameTime;
-              if (snapped !== lastSeek) {
-                video.currentTime = snapped;
-                lastSeek = snapped;
-              }
+        if (isTouch) {
+          // No `loop` — plays once per page load and holds on the last frame.
+          video.play().catch(() => {});
+        } else {
+          // Tween a plain number instead of `video.currentTime` directly,
+          // and snap it to the video's own frame boundaries before seeking.
+          // Every seek is a real decode, so asking for sub-frame precision
+          // the video can't display anyway just burns decode time that
+          // would otherwise go toward keeping up with scroll.
+          const frameTime = 1 / 30;
+          let lastSeek = -1;
+          const seek = { t: 0 };
+          tl.fromTo(
+            seek,
+            { t: 0 },
+            {
+              t: video.duration || 1,
+              duration: 6,
+              onUpdate: () => {
+                const snapped = Math.round(seek.t / frameTime) * frameTime;
+                if (snapped !== lastSeek) {
+                  video.currentTime = snapped;
+                  lastSeek = snapped;
+                }
+              },
             },
-          },
-          0
-        );
+            0
+          );
+        }
 
         tl.to(cueRef.current, { opacity: 0, duration: 0.8 }, 0);
         tl.to(logoRef.current, { opacity: 0, duration: 1.2 }, 0);
@@ -134,7 +151,9 @@ export default function Hero() {
     // caches the file, so the browser seeks locally either way.
 
     return () => {
-      document.documentElement.removeEventListener("touchstart", touchActivate);
+      if (touchActivate) {
+        document.documentElement.removeEventListener("touchstart", touchActivate);
+      }
       ctx?.revert();
     };
   }, []);
