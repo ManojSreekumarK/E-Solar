@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useLenis } from "lenis/react";
 
 const LINKS = [
   { id: "home", label: "Home" },
@@ -12,6 +13,7 @@ const LINKS = [
 
 export default function Nav() {
   const [active, setActive] = useState("home");
+  const lenis = useLenis();
 
   useEffect(() => {
     const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
@@ -34,7 +36,12 @@ export default function Nav() {
 
   function handleClick(id: string) {
     setActive(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    const target = document.getElementById(id);
+    if (!target) return;
+    // Native smooth scrolling fights Lenis's own interpolation, so go
+    // through it when it's running.
+    if (lenis) lenis.scrollTo(target);
+    else target.scrollIntoView({ behavior: "smooth" });
   }
 
   // The pill is ~470px of labels, wider than any phone, so it was being
