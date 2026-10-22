@@ -19,10 +19,22 @@ const SCRUB_TIERS = [
 const AUTOPLAY_SRC = "/videos/hero-solar-mobile.mp4"; // 1920x1080, standard compression, 5.2 MB
 const POSTER_SRC = "/videos/hero-poster.jpg";
 
+const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
+
 function pickVideoSrc(isTouch: boolean, width: number) {
   if (isTouch) return AUTOPLAY_SRC;
   return (SCRUB_TIERS.find((t) => width <= t.maxWidth) ?? SCRUB_TIERS[1]).src;
 }
+
+// Same choice as pickVideoSrc, inlined into the server HTML right after the
+// <video> so the download starts while the page is still parsing. Left to the
+// effect alone it waited on the JS bundle and hydration: ~4s on a throttled
+// phone before the first byte of video was even requested.
+const EARLY_SRC_SCRIPT = `(function(){var v=document.getElementById("hero-video");if(!v)return;var t=${JSON.stringify(
+  SCRUB_TIERS.map((t) => [t.maxWidth === Infinity ? null : t.maxWidth, t.src])
+)},w=innerWidth,s=${JSON.stringify(AUTOPLAY_SRC)};if(!matchMedia(${JSON.stringify(
+  TOUCH_QUERY
+)}).matches){s=t[t.length-1][1];for(var i=0;i<t.length;i++)if(t[i][0]===null||w<=t[i][0]){s=t[i][1];break}}v.src=s})()`;
 
 /** Attach a listener that removes itself after firing once. */
 function once(
@@ -60,12 +72,16 @@ export default function Hero() {
     // code. Autoplay/loop sidesteps the problem entirely instead of chasing
     // it, and as a bonus no longer needs an all-keyframe encode (see
     // LOOP_SRC above).
-    const isTouch = matchMedia("(hover: none) and (pointer: coarse)").matches;
+    const isTouch = matchMedia(TOUCH_QUERY).matches;
 
-    // Chosen here rather than with <source media>, which Chrome no longer
-    // matches, and rather than a src in the JSX, which would start the
-    // largest download before we could switch away from it.
-    video.src = pickVideoSrc(isTouch, window.innerWidth);
+    // Chosen in script rather than with <source media>, which Chrome no
+    // longer matches, and rather than a src in the JSX, which would start the
+    // largest download before we could switch away from it. Normally
+    // EARLY_SRC_SCRIPT has already set it; re-assigning would restart the
+    // download, so only fill it in if that script didn't run.
+    if (!video.getAttribute("src")) {
+      video.src = pickVideoSrc(isTouch, window.innerWidth);
+    }
 
     let ctx: gsap.Context | null = null;
 
@@ -167,13 +183,17 @@ export default function Hero() {
           style={{ willChange: "transform" }}
         >
           <video
+            id="hero-video"
             ref={videoRef}
             poster={POSTER_SRC}
             muted
             playsInline
             preload="auto"
             className="h-full w-full object-cover"
+            // EARLY_SRC_SCRIPT sets `src` before hydration.
+            suppressHydrationWarning
           />
+          <script dangerouslySetInnerHTML={{ __html: EARLY_SRC_SCRIPT }} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-black/20" />
           {/* Scrim for the copy. Measured on the source video: the centre of
               the frame is sky at luma ~178/255, which leaves white text at

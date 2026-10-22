@@ -18,7 +18,8 @@ export default function ReductionStat() {
   // `autoPlay` overrides preload="metadata": the browser pulled all 3.4 MB at
   // page load, competing with the hero video for bandwidth. Over a tunnel on a
   // phone that delays the thing the user actually sees first. Load it only
-  // once this section is roughly a screen away.
+  // once this section is under a screen away — a wider margin (150% was
+  // tried) already matches at page load, since the hero is only 150vh tall.
   useEffect(() => {
     const video = videoRef.current;
     const section = sectionRef.current;
@@ -31,7 +32,7 @@ export default function ReductionStat() {
         video.src = VIDEO_SRC;
         video.play().catch(() => {});
       },
-      { rootMargin: "150% 0px" }
+      { rootMargin: "75% 0px" }
     );
     io.observe(section);
     return () => io.disconnect();
