@@ -193,7 +193,9 @@ export default function PanelAnatomy() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={beat.image}
-                  alt={`Exploded panel view highlighting ${beat.label}`}
+                  alt={`Solar panel cross-section: ${beat.chips
+                    .map((c) => c.text)
+                    .join(", ")}`}
                   className="h-full w-full object-contain"
                 />
               </div>

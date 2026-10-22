@@ -3,6 +3,7 @@ import { Poppins, Inter } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { SITE_URL } from "@/lib/site";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -15,35 +16,36 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://esolar.example";
+// Leads with the service and the home district, which is what local searches
+// match on; "Power Your Future" stays as the on-page headline.
+const TITLE = "Rooftop Solar in Thiruvananthapuram & Kerala | E Solar";
 
 const DESCRIPTION =
-  "Expert solar consulting and installation across Kerala. Calculate your savings and go solar with E Solar.";
+  "Rooftop solar installation in Thiruvananthapuram and across Kerala: on-grid and hybrid systems for homes. Calculate your savings and get a custom quote.";
 
 export const metadata: Metadata = {
   // metadataBase makes the OG/Twitter image URLs absolute, which WhatsApp,
-  // Facebook and X all require. Set NEXT_PUBLIC_SITE_URL to the real domain
-  // at build time or link previews will point at the placeholder.
+  // Facebook and X all require. See SITE_URL in lib/site.ts.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "E Solar | Power Your Future",
+    default: TITLE,
     template: "%s | E Solar",
   },
   description: DESCRIPTION,
   applicationName: "E Solar",
   keywords: [
-    "solar Kerala",
-    "rooftop solar",
+    "rooftop solar Thiruvananthapuram",
+    "solar installation Kerala",
+    "solar panels Attingal",
     "on-grid solar",
     "hybrid solar",
-    "solar installation",
     "solar consulting",
   ],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "E Solar",
-    title: "E Solar | Power Your Future",
+    title: TITLE,
     description: DESCRIPTION,
     url: "/",
     locale: "en_IN",
@@ -58,7 +60,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "E Solar | Power Your Future",
+    title: TITLE,
     description: DESCRIPTION,
     images: ["/og-image.jpg"],
   },

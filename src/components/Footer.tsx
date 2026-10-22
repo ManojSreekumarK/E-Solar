@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ADDRESS_LINE, BUSINESS } from "@/lib/site";
 
 const DISCOVER = [
   { href: "#home", label: "Home" },
@@ -12,9 +13,9 @@ const DISCOVER = [
 // TODO: swap the remaining "#" entries for real profile URLs once they are confirmed.
 // WhatsApp is built from the phone number already shown in the footer bar.
 const SOCIAL = [
-  { href: "https://wa.me/918921259870", label: "WhatsApp", external: true },
-  { href: "https://www.facebook.com/profile.php?id=61591416965008", label: "Facebook", external: true },
-  { href: "https://www.instagram.com/esolar.in/", label: "Instagram", external: true },
+  { href: BUSINESS.social.whatsapp, label: "WhatsApp", external: true },
+  { href: BUSINESS.social.facebook, label: "Facebook", external: true },
+  { href: BUSINESS.social.instagram, label: "Instagram", external: true },
   { href: "#", label: "YouTube" },
 ];
 
@@ -232,19 +233,16 @@ export default function Footer() {
           <a href="#" className="transition-colors hover:text-white/80">
             Privacy Policy
           </a>
-          <span>S N Buildings, 30/258, LMS Junction, Attingal, Thiruvananthapuram - 695101</span>
-          <a
-            href="tel:+918921259870"
-            className="transition-colors hover:text-white/80"
-          >
-            +91 89212 59870
-          </a>
-          <a
-            href="tel:+919496307656"
-            className="transition-colors hover:text-white/80"
-          >
-            +91 94963 07656
-          </a>
+          <span>{ADDRESS_LINE}</span>
+          {BUSINESS.phones.map((p) => (
+            <a
+              key={p.tel}
+              href={`tel:${p.tel}`}
+              className="transition-colors hover:text-white/80"
+            >
+              {p.display}
+            </a>
+          ))}
         </div>
         <div className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
