@@ -21,7 +21,7 @@ export const BUSINESS = {
   },
   phones: [
     { tel: "+918921259870", display: "+91 89212 59870" },
-    { tel: "+919496307656", display: "+91 94963 07656" },
+    { tel: "+919496306756", display: "+91 94963 06756" },
   ],
   social: {
     whatsapp: "https://wa.me/918921259870",
